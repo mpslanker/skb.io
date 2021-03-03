@@ -1,4 +1,4 @@
-baseURL = "/"
+baseURL = "https://skb.io"
 title = "skb.io"
 
 enableRobotsTXT = true
@@ -53,7 +53,7 @@ anchor = "smart"
 [languages]
 [languages.en]
 title = "skb.io"
-description = "A Docsy example site"
+description = "Shit Keeps Breaking"
 languageName ="English"
 # Weight used for sorting.
 weight = 1
