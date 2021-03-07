@@ -1,2 +1,408 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>skb.io – skb.io</title><link>https://skb.io/</link><description>Recent content on skb.io</description><generator>Hugo -- gohugo.io</generator><atom:link href="https://skb.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: A place for various projects</title><link>https://skb.io/blog/2021/03/03/a-place-for-various-projects/</link><pubDate>Wed, 03 Mar 2021 12:39:28 -0700</pubDate><guid>https://skb.io/blog/2021/03/03/a-place-for-various-projects/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>skb.io – skb.io</title><link>https://skb.io/</link><description>Recent content on skb.io</description><generator>Hugo -- gohugo.io</generator><atom:link href="https://skb.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Docker Contexts &amp; Synology</title><link>https://skb.io/blog/2021/03/07/docker-contexts-synology/</link><pubDate>Sun, 07 Mar 2021 12:26:54 -0700</pubDate><guid>https://skb.io/blog/2021/03/07/docker-contexts-synology/</guid><description>
+&lt;h2 id="overview">Overview&lt;/h2>
+&lt;h3 id="goal">Goal&lt;/h3>
+&lt;p>To be able to use &lt;code>docker context&lt;/code> on my local machine to issue commands against the Docker instance on my Synology NAS.&lt;/p>
+&lt;h3 id="assumptions">Assumptions&lt;/h3>
+&lt;p>Unless specifically requested I won&amp;rsquo;t be covering the following here:&lt;/p>
+&lt;ul>
+&lt;li>Docker is installed on your Synology&lt;/li>
+&lt;li>You have enabled SSH on your Synology&lt;/li>
+&lt;li>You have docker installed on your client machine&lt;/li>
+&lt;li>You already have an SSH key that you want to use&lt;/li>
+&lt;/ul>
+&lt;h3 id="high-level-steps">High-level Steps&lt;/h3>
+&lt;p>Here is a quick checklist of things that needs to be done.&lt;/p>
+&lt;ul>
+&lt;li>&lt;input disabled="" type="checkbox"> Copy SSH key from client machine to Synology&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Fix permissions on your user directory&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Configure Synology&amp;rsquo;s SSH daemon&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Reload the daemon&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Verify you can log in with keys instead of password&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Verify docker version on Synology is 18.09 or later&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Create docker group&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Change permissions on docker socket&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Verify docker commands can be run locally without sudo&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Create docker context&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Change context and test&lt;/li>
+&lt;li>&lt;input disabled="" type="checkbox"> Profit!&lt;/li>
+&lt;/ul>
+&lt;h2 id="walkthrough">Walkthrough&lt;/h2>
+&lt;h3 id="enabling-ssh-access-using-keys">Enabling SSH access using keys&lt;/h3>
+&lt;p>By default it seems that Synology is not setup to allow authentication using SSH keys. So this is our first order of business.&lt;/p>
+&lt;h4 id="copy-ssh-key-from-client-machine-to-synology">Copy SSH key from client machine to Synology&lt;/h4>
+&lt;p>Let&amp;rsquo;s start by getting an suitable SSH key into the .authorized_keys file on the Synology. Make sure that you replace &lt;em>&lt;strong>&amp;lt;YOUR-SYNOLOGY-HOSTNAME-HERE&amp;gt;&lt;/strong>&lt;/em> with your Synology&amp;rsquo;s hostname or fqdn.&lt;/p>
+&lt;div class="highlight">&lt;div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;">&lt;tr>&lt;td style="vertical-align:top;padding:0;margin:0;border:0;">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">&lt;span style="color:#8f5902;font-style:italic"># Configuring SSH keys for synology login&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># On client machine&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Add ssh-key to synology&lt;/span>
+ssh-copy-id &lt;span style="color:#204a87;font-weight:bold">$(&lt;/span>id -un&lt;span style="color:#204a87;font-weight:bold">)&lt;/span>@&amp;lt;YOUR-SYNOLOGY-HOSTNAME-HERE&amp;gt;
+&lt;span style="color:#8f5902;font-style:italic"># You will likely be prompted for a password at this point&lt;/span>
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="fix-permissions-on-your-user-directory">Fix permissions on your user directory&lt;/h4>
+&lt;div class="highlight">&lt;div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;">&lt;tr>&lt;td style="vertical-align:top;padding:0;margin:0;border:0;">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">&lt;span style="color:#8f5902;font-style:italic"># Fix permissions on user directory&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># On Synology&lt;/span>
+sudo chmod &lt;span style="color:#0000cf;font-weight:bold">755&lt;/span> ~
+sudo chmod &lt;span style="color:#0000cf;font-weight:bold">755&lt;/span> -R ~/.ssh
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="configure-synologys-ssh-daemon">Configure Synology&amp;rsquo;s SSH daemon&lt;/h4>
+&lt;p>You should still be logged into your Synology from performing the previous steps. At this point we need to edit the SSH daemon&amp;rsquo;s config file. (It is assumed you are familiar with editing using vi but feel free to use any editor your are comfortable with.)&lt;/p>
+&lt;p>The file we need to edit is &lt;code>/etc/ssh/sshd_config&lt;/code> and you will need &lt;strong>sudo&lt;/strong> or &lt;strong>root&lt;/strong> access to edit this file.&lt;/p>
+&lt;p>Edit the file using: &lt;code>sudo vi /etc/ssh/sshd_config&lt;/code>&lt;/p>
+&lt;div class="alert alert-primary" role="alert">
+Below is a copy of my sshd_config file, however, it is possible yours may be different. Please do not just copy &amp;amp; paste this. Please take care to understand what these options are doing. I have highlighted the values in particular and explain each of them in turn.
+&lt;/div>
+&lt;ul>
+&lt;li>Lines 14 &amp;amp; 17: Hostkey values for RSA and ED25519 algorithms&lt;/li>
+&lt;li>Lines 39 &amp;amp; 40: Enable RSA &amp;amp; public key authentication modes&lt;/li>
+&lt;li>Line 101: Permits our users to override their environments.&lt;br>
+&lt;em>(This is necessary for some Docker functionality and is covered later in this post)&lt;/em>&lt;/li>
+&lt;/ul>
+&lt;div class="highlight">&lt;div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;">&lt;tr>&lt;td style="vertical-align:top;padding:0;margin:0;border:0;">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+&lt;/span>&lt;span style="display:block;width:100%;background-color:#dfdfdf">&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+&lt;/span>&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+&lt;/span>&lt;span style="display:block;width:100%;background-color:#dfdfdf">&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+&lt;/span>&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+&lt;/span>&lt;span style="display:block;width:100%;background-color:#dfdfdf">&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+&lt;/span>&lt;/span>&lt;span style="display:block;width:100%;background-color:#dfdfdf">&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+&lt;/span>&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+&lt;/span>&lt;span style="display:block;width:100%;background-color:#dfdfdf">&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+&lt;/span>&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">114
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">115
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">116
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">117
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">118
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">119
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">120
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">121
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">122
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">123
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">124
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">125
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">126
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">127
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">128
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">129
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">130
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">131
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">132
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">133
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">134
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">135
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">136
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">137
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">138
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">139
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">140
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">141
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">142
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">143
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">144
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">145
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">146
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">Ciphers aes128-ctr,aes128-gcm@openssh.com,aes192-ctr,aes256-ctr,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256,diffie-hellman-group14-sha1,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521
+MACs hmac-sha1,hmac-sha1-etm@openssh.com,hmac-sha2-256,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com,umac-128@openssh.com,umac-64-etm@openssh.com,umac-64@openssh.com
+&lt;span style="color:#8f5902;font-style:italic"># $OpenBSD: sshd_config,v 1.94 2015/02/02 01:57:44 deraadt Exp $ # This is the sshd server system-wide configuration file. See # sshd_config(5) for more information. # This sshd was compiled with PATH=/usr/bin:/bin:/usr/sbin:/sbin # The strategy used for options in the default sshd_config shipped with # OpenSSH is to specify options with their default value where # possible, but leave them commented. Uncommented options override the # default value. #Port 22 #AddressFamily any&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#ListenAddress 0.0.0.0&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#ListenAddress ::&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># The default requires explicit activation of protocol 1&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#Protocol 2&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># HostKey for protocol version 1&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#HostKey /etc/ssh/ssh_host_key&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># HostKeys for protocol version 2&lt;/span>
+&lt;span style="display:block;width:100%;background-color:#dfdfdf">HostKey /etc/ssh/ssh_host_rsa_key
+&lt;/span>&lt;span style="color:#8f5902;font-style:italic">#HostKey /etc/ssh/ssh_host_dsa_key&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#HostKey /etc/ssh/ssh_host_ecdsa_key&lt;/span>
+&lt;span style="display:block;width:100%;background-color:#dfdfdf">HostKey /etc/ssh/ssh_host_ed25519_key
+&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Lifetime and size of ephemeral version 1 server key&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#KeyRegenerationInterval 1h&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#ServerKeyBits 1024&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Ciphers and keying&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#RekeyLimit default none&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Logging&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># obsoletes QuietMode and FascistLogging&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#SyslogFacility AUTH&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#LogLevel INFO&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Authentication:&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#LoginGraceTime 2m&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#PermitRootLogin yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#StrictModes yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#MaxAuthTries 6&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#MaxSessions 10&lt;/span>
+&lt;span style="display:block;width:100%;background-color:#dfdfdf">RSAAuthentication yes
+&lt;/span>&lt;span style="display:block;width:100%;background-color:#dfdfdf">PubkeyAuthentication yes
+&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># but this is overridden so installations will only check .ssh/authorized_keys&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#AuthorizedKeysFile .ssh/authorized_keys&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#AuthorizedPrincipalsFile none&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#AuthorizedKeysCommand none&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#AuthorizedKeysCommandUser nobody&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># For this to work you will also need host keys in /etc/ssh/ssh_known_hosts&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#RhostsRSAAuthentication no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># similar for protocol version 2&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#HostbasedAuthentication no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Change to yes if you don&amp;#39;t trust ~/.ssh/known_hosts for&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># RhostsRSAAuthentication and HostbasedAuthentication&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#IgnoreUserKnownHosts no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Don&amp;#39;t read the user&amp;#39;s ~/.rhosts and ~/.shosts files&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#IgnoreRhosts yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># To disable tunneled clear text passwords, change to no here!&lt;/span>
+PasswordAuthentication yes
+&lt;span style="color:#8f5902;font-style:italic">#PermitEmptyPasswords no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Change to no to disable s/key passwords&lt;/span>
+ChallengeResponseAuthentication no
+&lt;span style="color:#8f5902;font-style:italic"># Kerberos options&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#KerberosAuthentication no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#KerberosOrLocalPasswd yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#KerberosTicketCleanup yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#KerberosGetAFSToken no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># GSSAPI options&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#GSSAPIAuthentication no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#GSSAPICleanupCredentials yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Set this to &amp;#39;yes&amp;#39; to enable PAM authentication, account processing,&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># and session processing. If this is enabled, PAM authentication will&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># be allowed through the ChallengeResponseAuthentication and&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># PasswordAuthentication. Depending on your PAM configuration,&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># PAM authentication via ChallengeResponseAuthentication may bypass&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># the setting of &amp;#34;PermitRootLogin without-password&amp;#34;.&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># If you just want the PAM account and session checks to run without&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># PAM authentication, then enable this but set PasswordAuthentication&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># and ChallengeResponseAuthentication to &amp;#39;no&amp;#39;.&lt;/span>
+UsePAM yes
+&lt;span style="color:#8f5902;font-style:italic">#AllowAgentForwarding yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#AllowTcpForwarding no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#GatewayPorts no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#X11Forwarding no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#X11DisplayOffset 10&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#X11UseLocalhost yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#PermitTTY yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#PrintMotd yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#PrintLastLog yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#TCPKeepAlive yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#UseLogin no&lt;/span>
+UsePrivilegeSeparation sandbox &lt;span style="color:#8f5902;font-style:italic"># Default for new installations.&lt;/span>
+&lt;span style="display:block;width:100%;background-color:#dfdfdf">PermitUserEnvironment yes
+&lt;/span>&lt;span style="color:#8f5902;font-style:italic">#Compression delayed&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#ClientAliveInterval 0&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#ClientAliveCountMax 3&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#UseDNS no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#PidFile /var/run/sshd.pid&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#MaxStartups 10:30:100&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#PermitTunnel no&lt;/span>
+ChrootDirectory none
+&lt;span style="color:#8f5902;font-style:italic">#VersionAddendum none&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># no default banner path&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#Banner none&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># override default of no subsystems&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#Subsystem sftp /usr/libexec/sftp-server&lt;/span>
+Subsystem sftp internal-sftp -f DAEMON -u &lt;span style="color:#0000cf;font-weight:bold">000&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># the following are HPN related configuration options&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># tcp receive buffer polling. disable in non autotuning kernels&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#TcpRcvBufPoll yes&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># disable hpn performance boosts&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#HPNDisabled no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># buffer size for hpn to non-hpn connections&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#HPNBufferSize 2048&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># allow the use of the none cipher&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#NoneEnabled no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Example of overriding settings on a per-user basis&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic">#Match User anoncvs&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># X11Forwarding no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># AllowTcpForwarding no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># PermitTTY no&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># ForceCommand cvs server&lt;/span>
+Match User root
+AllowTcpForwarding yes
+Match User admin
+AllowTcpForwarding yes
+Match User anonymous
+AllowTcpForwarding no
+GatewayPorts no
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Make the changes as necessary, save, exit the file.&lt;/p>
+&lt;h4 id="reload-the-ssh-daemon">Reload the SSH daemon&lt;/h4>
+&lt;div class="alert alert-primary" role="alert">
+We need to validate the config before reloading or we might get locked out. If this happens you also have the option to turn on Telnet via the web GUI but let&amp;rsquo;s try to avoid that.
+&lt;/div>
+&lt;p>Next we can validate the config and resload it.&lt;/p>
+&lt;div class="highlight">&lt;div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;">&lt;tr>&lt;td style="vertical-align:top;padding:0;margin:0;border:0;">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">&lt;span style="color:#8f5902;font-style:italic"># Validate (As long as there are no errors we are good.)&lt;/span>
+&lt;span style="color:#8f5902;font-style:italic"># Deprecations can be ignored for now&lt;/span>
+sudo sshd -t
+&lt;span style="color:#8f5902;font-style:italic"># Reload&lt;/span>
+sudo synoservicectl --reload sshd
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="verify-you-can-log-in-with-keys-instead-of-password">Verify you can log in with keys instead of password&lt;/h4>
+&lt;p>Congratulations! You should now be able to log into your Synology without getting prompted for a password. Next up, configuring Docker.&lt;/p>
+&lt;h3 id="configuring-the-docker-daemon">Configuring the Docker daemon&lt;/h3>
+&lt;p>Coming soon&lt;/p>
+&lt;h4 id="verify-docker-version-on-synology-is-1809-or-later">Verify docker version on Synology is 18.09 or later&lt;/h4>
+&lt;p>Coming soon&lt;/p>
+&lt;h4 id="create-docker-group">Create docker group&lt;/h4>
+&lt;p>Coming soon&lt;/p>
+&lt;h4 id="change-permissions-on-docker-socket">Change permissions on docker socket&lt;/h4>
+&lt;p>Coming soon&lt;/p>
+&lt;h4 id="verify-docker-commands-can-be-run-locally-without-sudo">Verify docker commands can be run locally without sudo&lt;/h4>
+&lt;p>Coming soon&lt;/p>
+&lt;h4 id="create-docker-context">Create docker context&lt;/h4>
+&lt;p>Coming soon&lt;/p>
+&lt;h4 id="change-context-and-test">Change context and test&lt;/h4>
+&lt;p>Coming soon&lt;/p>
+&lt;!--
+## Notes
+Ssh daemon was compiled with: `PATH=/usr/bin:/bin:/usr/sbin:/sbin`. You can see this in the `/etc/ssh/sshd_config` notes at the top. Thus non-interactive shells or ssh commands will have that as its path. This cannot be changed unless you wanna recompile (which we do not) therefore we shall enable "PermitUserEnvironment" in the sshd_config. Uncomment and set this line to 'yes'. You will notice that when you log in interactively you get a different PATH. `/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:/usr/local/bin`. A number of things are happening here. It seems that when logging in interactively bash is called as sh which changes its behavior but you can also use `—login` when it is called to allow it to load `/etc/profile` which is what sets your path etc during an interactive ssh session.
+-->
+&lt;h3 id="helpful-links">Helpful Links&lt;/h3>
+&lt;p>&lt;a href="https://www.youtube.com/watch?v=YX2BSioWyhI">YouTube&lt;/a> Docker-Nuggets - Docker Context&lt;/p>
+&lt;p>&lt;a href="https://github.com/sixeyed/youtube/tree/master/docker-nuggets/S1E1-docker-context">YouTube/docker-nuggets/S1E1-docker-context at master · sixeyed/YouTube · GitHub&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://unix.stackexchange.com/questions/332532/how-to-set-path-when-running-a-ssh-command">Bash - How to set PATH when running a ssh command? - Unix &amp;amp; Linux Stack Exchange&lt;/a>&lt;/p>
+&lt;p>It is the little things that help so freaking much.&lt;br>
+&lt;a href="https://unix.stackexchange.com/questions/26676/how-to-check-if-a-shell-is-login-interactive-batch">How to check if a shell is login/interactive/batch - Unix &amp;amp; Linux Stack Exchange&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://unix.stackexchange.com/questions/493287/command-not-found-when-using-ssh-and-non-absolute-commands">Shell - &amp;ldquo;Command not found&amp;rdquo; when using ssh and non absolute commands - Unix &amp;amp; Linux Stack Exchange&lt;/a>&lt;/p>
+&lt;p>Good ol’ official documentation ftw&lt;br>
+&lt;a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html">Bash Startup Files (Bash Reference Manual)&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://blog.aaronlenoir.com/2018/05/06/ssh-into-synology-nas-with-ssh-key/">Configure Synology NAS SSH Key-based authentication&lt;/a>&lt;/p>
+&lt;p>&lt;a href="https://www.thegeekdiary.com/how-to-fix-the-error-host-key-verification-failed/">How to fix the error “host key verification failed” – The Geek Diary&lt;/a>&lt;/p></description></item><item><title>Blog: A place for various projects</title><link>https://skb.io/blog/2021/03/03/a-place-for-various-projects/</link><pubDate>Wed, 03 Mar 2021 12:39:28 -0700</pubDate><guid>https://skb.io/blog/2021/03/03/a-place-for-various-projects/</guid><description>
 &lt;p>More coming (hopefully) soon&lt;/p></description></item></channel></rss>
