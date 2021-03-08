@@ -68,6 +68,9 @@ Edit the file using: `sudo vi /etc/ssh/sshd_config`
 
 {{< alert >}}
 Below is a copy of my sshd_config file, however, it is possible yours may be different.  Please do not just copy & paste this.  Please take care to understand what these options are doing.  I have highlighted the values in particular and explain each of them in turn.
+
+It is also advised you back up this file before altering it.
+A simple `sudo cp /etc/ssh/sshd_config ~/sshd_config.bak` should suffice.
 {{< /alert >}}
 
 * Lines 14 & 17: Hostkey values for RSA and ED25519 algorithms
@@ -242,25 +245,100 @@ sudo synoservicectl --reload sshd
 Congratulations! You should now be able to log into your Synology without getting prompted for a password.  Next up, configuring Docker.
 
 ### Configuring the Docker daemon
-Coming soon
+There are a few way to accomplish setting up the Docker daemon for remote access.  However, for our purposes we are going to use SSH to drastically simplify the setup as it doesn't require us to generate certs or change anything about the socket. If you would like to learn more about the different options I highly recommend this Elton's [Docker Nuggets video](https://www.youtube.com/watch?v=YX2BSioWyhI) on Remote Control with Docker Context.
 
 #### Verify docker version on Synology is 18.09 or later
-Coming soon
+The only prerequisite for this on the Synology side is to make sure that the installed Docker version is 18.09 or later.  You can check this by logging into your Synology via SSH and running the following command:
+`sudo docker version`
+
+Your output should look like something like this (note the highlight line):
+``` bash {linenos=table,hl_lines=[13]}
+you@your-synology:~$ sudo docker version
+Client:
+ Version:           18.09.8
+ API version:       1.39
+ Go version:        go1.11
+ Git commit:        bfed4f5
+ Built:             Fri Mar 13 06:46:11 2020
+ OS/Arch:           linux/amd64
+ Experimental:      false
+
+Server:
+ Engine:
+  Version:          18.09.8
+  API version:      1.39 (minimum version 1.12)
+  Go version:       go1.11
+  Git commit:       3a371f3
+  Built:            Fri Mar 13 06:44:35 2020
+  OS/Arch:          linux/amd64
+  Experimental:     false
+```
 
 #### Create docker group
-Coming soon
+Assuming we're good here the next thing we want to do is remove the need to use `sudo` everytime we want to run a docker command.  We start by creating a group which we can grant this access.
+
+``` bash {linenos=table}
+# Create a group named 'docker`
+# and add your logged in user
+sudo synogroup --add docker $(id -un)
+```
+
+{{< alert >}}
+Please make sure to protect access to this group.  It gives people the ability to run containers and mount local disks, so don't just grant anyone and everyone access.
+{{< /alert >}}
 
 #### Change permissions on docker socket
-Coming soon
+And finally we need to change the permissions on the socket. By default Synology sets the permissions to **srw-rw---- 1 root root** but we will be changing this to **root docker**
+
+``` bash {linenos=table}
+# (Optional) View current permissions
+ls -al /var/run/docker.sock
+
+# Grant the docker group access to the socket
+sudo chown root:docker /var/run/docker.sock
+```
 
 #### Verify docker commands can be run locally without sudo
-Coming soon
+If everything has gone as it should you should be able to logout, log back in, and run `docker ps` sans `sudo` and get results (instead of an error message).  If you have made it this far continue on the last piece of the puzzle.
 
-#### Create docker context
-Coming soon
+Example output:
+
+``` bash {linenos=table}
+you@your-synology:~$ docker version
+CONTAINER ID IMAGE                COMMAND    CREATED     STATUS               PORTS NAMES
+b4edeec64cd2 pihole/pihole:latest "/s6-init" 2 weeks ago Up 2 weeks (healthy)       pi-hole
+```
+
+Now let's do that remotely!
+
+#### Create the Docker context
+In order to make it easier to switch between different Dockerized servers Docker Contexts was introduced.  So we will be creating a context on your local machine in order to easily switch to using Synology's Docker instance.
+
+
+
+``` bash {linenos=table}
+# Create the new context
+docker context create syn-ssh --docker \
+"host=ssh://you@your-synology"
+
+# Verify the context was created
+docker context ls
+```
+You should see two contexts listed.  The original default and the newly created "syn-ssh".
 
 #### Change context and test
-Coming soon
+And now for the final test...
+
+``` bash {linenos=table}
+# Switch context
+docker context use syn-ssh
+
+# Test docker ps against the remote docker
+docker ps
+```
+
+If you are seeing the containers that are running on your Synology then **SUCCESS**!!! Pat yourself on the back and enjoy.
+
 
 <!-- 
 ## Notes
@@ -269,9 +347,7 @@ Ssh daemon was compiled with: `PATH=/usr/bin:/bin:/usr/sbin:/sbin`. You can see 
 -->
 
 ### Helpful Links
-[YouTube](https://www.youtube.com/watch?v=YX2BSioWyhI) Docker-Nuggets - Docker Context
-
-[YouTube/docker-nuggets/S1E1-docker-context at master · sixeyed/YouTube · GitHub](https://github.com/sixeyed/youtube/tree/master/docker-nuggets/S1E1-docker-context)
+[YouTube - Docker-Nuggets S1E1](https://www.youtube.com/watch?v=YX2BSioWyhI) & [Accompanying Docs for Elton's Video Above](https://github.com/sixeyed/youtube/tree/master/docker-nuggets/S1E1-docker-context)
 
 [Bash - How to set PATH when running a ssh command? - Unix & Linux Stack Exchange](https://unix.stackexchange.com/questions/332532/how-to-set-path-when-running-a-ssh-command)
 
@@ -280,7 +356,7 @@ It is the little things that help so freaking much.
 
 [Shell - "Command not found" when using ssh and non absolute commands - Unix & Linux Stack Exchange](https://unix.stackexchange.com/questions/493287/command-not-found-when-using-ssh-and-non-absolute-commands)
 
-Good ol’ official documentation ftw  
+Good ol’ official documentation ftw!  
 [Bash Startup Files (Bash Reference Manual)](https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html)
 
 [Configure Synology NAS SSH Key-based authentication](https://blog.aaronlenoir.com/2018/05/06/ssh-into-synology-nas-with-ssh-key/)
