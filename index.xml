@@ -1,4 +1,134 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>skb.io – skb.io</title><link>https://skb.io/</link><description>Recent content on skb.io</description><generator>Hugo -- gohugo.io</generator><atom:link href="https://skb.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Docker Contexts &amp; Synology</title><link>https://skb.io/blog/2021/03/07/docker-contexts-synology/</link><pubDate>Sun, 07 Mar 2021 12:26:54 -0700</pubDate><guid>https://skb.io/blog/2021/03/07/docker-contexts-synology/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>skb.io – skb.io</title><link>https://skb.io/</link><description>Recent content on skb.io</description><generator>Hugo -- gohugo.io</generator><atom:link href="https://skb.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: Xpenology DSM on VMware ESXi 7</title><link>https://skb.io/blog/2021/03/07/xpenology-dsm-on-vmware-esxi-7/</link><pubDate>Sun, 07 Mar 2021 21:50:36 -0600</pubDate><guid>https://skb.io/blog/2021/03/07/xpenology-dsm-on-vmware-esxi-7/</guid><description>
+&lt;h2 id="goals">Goals&lt;/h2>
+&lt;p>To build a virtual DSM machine starting with just the synoboot.img.&lt;/p>
+&lt;h2 id="vmware-steps">VMware Steps&lt;/h2>
+&lt;p>Steps to create a VM with the hardware necessary to boot Jun&amp;rsquo;s synoboot image&lt;/p>
+&lt;ol>
+&lt;li>Create new VM&lt;/li>
+&lt;li>Configure similar to table below
+&lt;ol>
+&lt;li>Important settings are the Guest OS name, NIC type, NIC MAC address, Hard disk 1 capacity, Hard disk 1 device node&lt;/li>
+&lt;/ol>
+&lt;/li>
+&lt;li>Add any additional hard disks, attached to the second SATA controller starting at position 1:0&lt;/li>
+&lt;li>In the VM&amp;rsquo;s CD/DVD drive, mount a Linux Live ISO (I used &lt;a href="https://getfedora.org/en/workstation/download/">Fedora 33 Workstation&lt;/a>). All you really need is something that has &lt;code>dd&lt;/code> and a browser.&lt;/li>
+&lt;li>Boot VM, booting into the Linux OS.&lt;/li>
+&lt;/ol>
+&lt;h2 id="vm---linux-steps">VM - Linux Steps&lt;/h2>
+&lt;p>Steps to write the synoboot.img to your VM&amp;rsquo;s VMDK&lt;/p>
+&lt;ol start="6">
+&lt;li>Once Linux is booted, use it&amp;rsquo;s browser to download &lt;a href="https://xpenology.com/forum/topic/12952-dsm-62-loader/">synoboot.img&lt;/a>&lt;/li>
+&lt;li>Write synoboot.img to the 50MB disk
+&lt;div class="highlight">&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">&lt;span style="color:#8f5902;font-style:italic"># use sudo fdisk -l to identify the 50MB disk for the following command&lt;/span>
+sudo dd &lt;span style="color:#204a87;font-weight:bold">if&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>synoboot.img &lt;span style="color:#000">of&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>/dev/sda
+&lt;/code>&lt;/pre>&lt;/div>&lt;/li>
+&lt;li>Restart the VM&lt;/li>
+&lt;li>Disconnect Linux Live ISO; you want to make sure you&amp;rsquo;re booting from the 50MB disk now.&lt;/li>
+&lt;li>If you&amp;rsquo;re successfully booting from the 50MB disk, then grub should load and present you with 3 boot options: choose the ESXi option (this menu will disappear quickly)&lt;/li>
+&lt;li>Once the VM is on the &lt;code>Happy hacking&lt;/code> screen, from your main computer (on the same network as the VM) run &lt;a href="https://www.synology.com/en-us/support/download/DS918+#utilities">Synology Assistant&lt;/a> and search for devices (I had better luck running this on Windows vs macOS. If Windows doesn&amp;rsquo;t automatically ask to allow the Synology Assistant through the firewall, then you might need to manually allow it or disable the Windows Firewall)&lt;/li>
+&lt;/ol>
+&lt;h2 id="dsm-install">DSM Install&lt;/h2>
+&lt;ol start="12">
+&lt;li>If your vDSM is found, the Synology Assistant should pop up the EULA agreement (if it doesn&amp;rsquo;t pop up you can select the discovered device and click &lt;code>Connect&lt;/code>). Once you&amp;rsquo;ve agreed, your browser should open to the Set up screen to install/setup DSM.&lt;/li>
+&lt;li>Click &lt;code>Set up&lt;/code>&lt;/li>
+&lt;li>Click &lt;code>Manual Install&lt;/code>&lt;/li>
+&lt;li>Click &lt;code>Browse&lt;/code> and select the &lt;a href="https://archive.synology.com/download/Os/DSM">.pat file downloaded from Synology&lt;/a> (Download a base release [without a -number at the end]. I used &lt;code>DSM_DS918+_23739.pat&lt;/code> but have since upgraded to DSM 6.2.3-25426)&lt;/li>
+&lt;li>Click &lt;code>Install Now&lt;/code>&lt;/li>
+&lt;li>Acknowledge that all data will be erased from the existing disks&lt;/li>
+&lt;li>The DSM install will proceed&lt;/li>
+&lt;li>After install completes a reboot counter will show. You can monitor the VM console to see once the VM has rebooted and is back on the &lt;code>Happy hacking&lt;/code> screen. Then you should be able to load the DSM web console at &lt;code>https://&amp;lt;IP address&amp;gt;:5000&lt;/code> (IP address is shown in the Synology Assistant) and continue the DSM setup&lt;/li>
+&lt;li>Complete the administrator account setup screen: assigning the hostname, and creating the administrator user&lt;/li>
+&lt;li>Complete the DSM Update and Maintenance setup screen: Choose the option to be notified about updates, avoid automatic updates&lt;/li>
+&lt;li>On the Set up QuickConnect screen, click the link at the bottom of the page to &lt;code>Skip this step&lt;/code>&lt;/li>
+&lt;li>On the final setup screen, leave the option to share your location with Synology unchecked&lt;/li>
+&lt;li>DSM should load normally&lt;/li>
+&lt;/ol>
+&lt;h2 id="dsm-setup">DSM Setup&lt;/h2>
+&lt;ol start="25">
+&lt;li>Open Storage Manager and create a volume, the details of which are up to you. This step is required before you&amp;rsquo;ll be able to install any packages.&lt;/li>
+&lt;li>&lt;a href="https://github.com/leonardw/synology-open-vm-tools/releases/">Download the latest open-vm-tools&lt;/a> for your selected model/architecture. For the DS918+ I used the &lt;a href="https://github.com/leonardw/synology-open-vm-tools/releases/download/release-11.0.1-1/open-vm-tools_apollolake-6.1_11.0.1-1.spk">latest apollolake tools&lt;/a>.&lt;/li>
+&lt;li>Open Package Center, click &lt;code>Manual Install&lt;/code>&lt;/li>
+&lt;li>Click &lt;code>Browse&lt;/code> and find the &lt;code>open-vm-tools_*.spk&lt;/code> file you downloaded above, and complete the package install.&lt;/li>
+&lt;/ol>
+&lt;h2 id="vm-configuration-table">VM Configuration Table&lt;/h2>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>Setting&lt;/th>
+&lt;th>Value&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>Guest OS name&lt;/td>
+&lt;td>Other 3.x Linux (64-bit)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Virtualization Based Security&lt;/td>
+&lt;td>Disabled&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>CPUs&lt;/td>
+&lt;td>2&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Memory&lt;/td>
+&lt;td>8 GB&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>NIC 1 type&lt;/td>
+&lt;td>E1000E&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>NIC 1 MAC address&lt;/td>
+&lt;td>00:11:32:12:34:56 - This must match the value present inside the synoboot.img&amp;rsquo;s grub.cfg. The value provided here matches the value as of the 1.04b release&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>SATA Controller 0&lt;/strong>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Hard disk 1 Capacity&lt;/td>
+&lt;td>50 MB - This is the size of the synoboot.img which we&amp;rsquo;ll be writing to this disk&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Hard disk 1 Virtual device node&lt;/td>
+&lt;td>SATA(0:0) - This is the boot disk so we want it as the first disk&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Hard disk 1 Mode&lt;/td>
+&lt;td>Dependent&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>SATA Controller 1&lt;/strong>&lt;/td>
+&lt;td>&lt;strong>Attach any additional disks here&lt;/strong>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Hard disk 2 Capacity&lt;/td>
+&lt;td>40 GB&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Hard disk 2 Virtual device node&lt;/td>
+&lt;td>SATA(1:0)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>Hard disk 2 Mode&lt;/td>
+&lt;td>Dependent&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>IDE Controller 0&lt;/strong>&lt;/td>
+&lt;td>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>CD/DVD Drive 1 Status&lt;/td>
+&lt;td>[X] Connect At Power On&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>CD/DVD Drive 1 CD/DVD Media&lt;/td>
+&lt;td>ISO file - iso/Fedora-Workstation-Live-x86_64-33-1.2.iso&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table></description></item><item><title>Blog: Docker Contexts &amp; Synology</title><link>https://skb.io/blog/2021/03/07/docker-contexts-synology/</link><pubDate>Sun, 07 Mar 2021 12:26:54 -0700</pubDate><guid>https://skb.io/blog/2021/03/07/docker-contexts-synology/</guid><description>
 &lt;h2 id="overview">Overview&lt;/h2>
 &lt;h3 id="goal">Goal&lt;/h3>
 &lt;p>To be able to use &lt;code>docker context&lt;/code> on my local machine to issue commands against the Docker instance on my Synology NAS.&lt;/p>
