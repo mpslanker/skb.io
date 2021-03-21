@@ -179,6 +179,24 @@ ssh-copy-id &lt;span style="color:#204a87;font-weight:bold">$(&lt;/span>id -un&l
 &lt;span style="color:#8f5902;font-style:italic"># You will likely be prompted for a password at this point&lt;/span>
 &lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
 &lt;/div>
+&lt;/div>&lt;h4 id="create-an-environment-file-in-the-ssh-folder">Create an &amp;lsquo;environment&amp;rsquo; file in the .ssh folder&lt;/h4>
+&lt;p>As we will see in a later step we need to be able to set the users environment in a non-interactive session. Therefore we need to create a file name &amp;ldquo;environment&amp;rdquo;, add a line which configures the path, and mark it executable.&lt;/p>
+&lt;div class="highlight">&lt;div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+&lt;table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;">&lt;tr>&lt;td style="vertical-align:top;padding:0;margin:0;border:0;">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+&lt;/span>&lt;span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+&lt;pre style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">&lt;code class="language-bash" data-lang="bash">&lt;span style="color:#8f5902;font-style:italic"># Create the &amp;#39;environment&amp;#39; file in ~/.ssh&lt;/span>
+&lt;span style="color:#204a87">cd&lt;/span> ~/.ssh
+&lt;span style="color:#8f5902;font-style:italic"># Write our current PATH to the environement file&lt;/span>
+&lt;span style="color:#204a87">echo&lt;/span> &lt;span style="color:#000">PATH&lt;/span>&lt;span style="color:#ce5c00;font-weight:bold">=&lt;/span>&lt;span style="color:#000">$PATH&lt;/span> &amp;gt;&amp;gt; ./environment
+chmod +x ./environment
+&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
 &lt;/div>&lt;h4 id="fix-permissions-on-your-user-directory">Fix permissions on your user directory&lt;/h4>
 &lt;div class="highlight">&lt;div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
 &lt;table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;">&lt;tr>&lt;td style="vertical-align:top;padding:0;margin:0;border:0;">
@@ -207,7 +225,7 @@ A simple &lt;code>sudo cp /etc/ssh/sshd_config ~/sshd_config.bak&lt;/code> shoul
 &lt;ul>
 &lt;li>Lines 14 &amp;amp; 17: Hostkey values for RSA and ED25519 algorithms&lt;/li>
 &lt;li>Lines 39 &amp;amp; 40: Enable RSA &amp;amp; public key authentication modes&lt;/li>
-&lt;li>Line 101: Permits our users to override their environments.&lt;br>
+&lt;li>Line 101: Permits our users to override their environments.
 &lt;em>(This is necessary for some Docker functionality and is covered later in this post)&lt;/em>&lt;/li>
 &lt;/ul>
 &lt;div class="highlight">&lt;div style="background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
@@ -509,7 +527,7 @@ sudo synoservicectl --reload sshd
 &lt;/div>&lt;h4 id="verify-you-can-log-in-with-keys-instead-of-password">Verify you can log in with keys instead of password&lt;/h4>
 &lt;p>Congratulations! You should now be able to log into your Synology without getting prompted for a password. Next up, configuring Docker.&lt;/p>
 &lt;h3 id="configuring-the-docker-daemon">Configuring the Docker daemon&lt;/h3>
-&lt;p>There are a few way to accomplish setting up the Docker daemon for remote access. However, for our purposes we are going to use SSH to drastically simplify the setup as it doesn&amp;rsquo;t require us to generate certs or change anything about the socket. If you would like to learn more about the different options I highly recommend this Elton&amp;rsquo;s &lt;a href="https://www.youtube.com/watch?v=YX2BSioWyhI">Docker Nuggets video&lt;/a> on Remote Control with Docker Context.&lt;/p>
+&lt;p>There are a few ways to accomplish setting up the Docker daemon for remote access. However, for our purposes we are going to use SSH to drastically simplify the setup as it doesn&amp;rsquo;t require us to generate certs or change anything about the socket. If you would like to learn more about the different options I highly recommend this Elton&amp;rsquo;s &lt;a href="https://www.youtube.com/watch?v=YX2BSioWyhI">Docker Nuggets video&lt;/a> on Remote Control with Docker Context.&lt;/p>
 &lt;h4 id="verify-docker-version-on-synology-is-1809-or-later">Verify docker version on Synology is 18.09 or later&lt;/h4>
 &lt;p>The only prerequisite for this on the Synology side is to make sure that the installed Docker version is 18.09 or later. You can check this by logging into your Synology via SSH and running the following command:
 &lt;code>sudo docker version&lt;/code>&lt;/p>
@@ -653,10 +671,10 @@ Ssh daemon was compiled with: `PATH=/usr/bin:/bin:/usr/sbin:/sbin`. You can see 
 &lt;h3 id="helpful-links">Helpful Links&lt;/h3>
 &lt;p>&lt;a href="https://www.youtube.com/watch?v=YX2BSioWyhI">YouTube - Docker-Nuggets S1E1&lt;/a> &amp;amp; &lt;a href="https://github.com/sixeyed/youtube/tree/master/docker-nuggets/S1E1-docker-context">Accompanying Docs for Elton&amp;rsquo;s Video Above&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://unix.stackexchange.com/questions/332532/how-to-set-path-when-running-a-ssh-command">Bash - How to set PATH when running a ssh command? - Unix &amp;amp; Linux Stack Exchange&lt;/a>&lt;/p>
-&lt;p>It is the little things that help so freaking much.&lt;br>
+&lt;p>It is the little things that help so freaking much.
 &lt;a href="https://unix.stackexchange.com/questions/26676/how-to-check-if-a-shell-is-login-interactive-batch">How to check if a shell is login/interactive/batch - Unix &amp;amp; Linux Stack Exchange&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://unix.stackexchange.com/questions/493287/command-not-found-when-using-ssh-and-non-absolute-commands">Shell - &amp;ldquo;Command not found&amp;rdquo; when using ssh and non absolute commands - Unix &amp;amp; Linux Stack Exchange&lt;/a>&lt;/p>
-&lt;p>Good ol’ official documentation ftw!&lt;br>
+&lt;p>Good ol’ official documentation ftw!
 &lt;a href="https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html">Bash Startup Files (Bash Reference Manual)&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://blog.aaronlenoir.com/2018/05/06/ssh-into-synology-nas-with-ssh-key/">Configure Synology NAS SSH Key-based authentication&lt;/a>&lt;/p>
 &lt;p>&lt;a href="https://www.thegeekdiary.com/how-to-fix-the-error-host-key-verification-failed/">How to fix the error “host key verification failed” – The Geek Diary&lt;/a>&lt;/p></description></item><item><title>Blog: A place for various projects</title><link>https://skb.io/blog/2021/03/03/a-place-for-various-projects/</link><pubDate>Wed, 03 Mar 2021 12:39:28 -0700</pubDate><guid>https://skb.io/blog/2021/03/03/a-place-for-various-projects/</guid><description>
