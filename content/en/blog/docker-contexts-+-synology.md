@@ -50,6 +50,18 @@ ssh-copy-id $(id -un)@<YOUR-SYNOLOGY-HOSTNAME-HERE>
 ```
 
 
+#### Create an 'environment' file in the .ssh folder
+As we will see in a later step we need to be able to set the users environment in a non-interactive session.  Therefore we need to create a file name "environment", add a line which configures the path, and mark it executable.
+
+``` bash {linenos=table}
+# Create the 'environment' file in ~/.ssh
+cd ~/.ssh
+# Write our current PATH to the environement file
+echo PATH=$PATH >> ./environment
+chmod +x ./environment
+```
+
+
 #### Fix permissions on your user directory
 ``` bash {linenos=table}
 # Fix permissions on user directory
@@ -75,7 +87,7 @@ A simple `sudo cp /etc/ssh/sshd_config ~/sshd_config.bak` should suffice.
 
 * Lines 14 & 17: Hostkey values for RSA and ED25519 algorithms
 * Lines 39 & 40: Enable RSA & public key authentication modes
-* Line 101: Permits our users to override their environments.  
+* Line 101: Permits our users to override their environments.
 *(This is necessary for some Docker functionality and is covered later in this post)*
 
 ``` bash {linenos=table,hl_lines=[14,17,39,40,101]}
@@ -179,7 +191,7 @@ UsePAM yes
 #TCPKeepAlive yes
 #UseLogin no
 UsePrivilegeSeparation sandbox		# Default for new installations.
-PermitUserEnvironment yes 
+PermitUserEnvironment yes
 #Compression delayed
 #ClientAliveInterval 0
 #ClientAliveCountMax 3
@@ -245,7 +257,7 @@ sudo synoservicectl --reload sshd
 Congratulations! You should now be able to log into your Synology without getting prompted for a password.  Next up, configuring Docker.
 
 ### Configuring the Docker daemon
-There are a few way to accomplish setting up the Docker daemon for remote access.  However, for our purposes we are going to use SSH to drastically simplify the setup as it doesn't require us to generate certs or change anything about the socket. If you would like to learn more about the different options I highly recommend this Elton's [Docker Nuggets video](https://www.youtube.com/watch?v=YX2BSioWyhI) on Remote Control with Docker Context.
+There are a few ways to accomplish setting up the Docker daemon for remote access.  However, for our purposes we are going to use SSH to drastically simplify the setup as it doesn't require us to generate certs or change anything about the socket. If you would like to learn more about the different options I highly recommend this Elton's [Docker Nuggets video](https://www.youtube.com/watch?v=YX2BSioWyhI) on Remote Control with Docker Context.
 
 #### Verify docker version on Synology is 18.09 or later
 The only prerequisite for this on the Synology side is to make sure that the installed Docker version is 18.09 or later.  You can check this by logging into your Synology via SSH and running the following command:
@@ -340,7 +352,7 @@ docker ps
 If you are seeing the containers that are running on your Synology then **SUCCESS**!!! Pat yourself on the back and enjoy.
 
 
-<!-- 
+<!--
 ## Notes
 
 Ssh daemon was compiled with: `PATH=/usr/bin:/bin:/usr/sbin:/sbin`. You can see this in the `/etc/ssh/sshd_config` notes at the top.  Thus non-interactive shells or ssh commands will have that as its path.  This cannot be changed unless you wanna recompile (which we do not) therefore we shall enable "PermitUserEnvironment" in the sshd_config.  Uncomment and set this line to 'yes'.   You will notice that when you log in interactively you get a different PATH. `/sbin:/bin:/usr/sbin:/usr/bin:/usr/syno/sbin:/usr/syno/bin:/usr/local/sbin:/usr/local/bin`.  A number of things are happening here.  It seems that when logging in interactively bash is called as sh which changes its behavior but you can also use `—login` when it is called to allow it to load `/etc/profile` which is what sets your path etc during an interactive ssh session.
@@ -351,12 +363,12 @@ Ssh daemon was compiled with: `PATH=/usr/bin:/bin:/usr/sbin:/sbin`. You can see 
 
 [Bash - How to set PATH when running a ssh command? - Unix & Linux Stack Exchange](https://unix.stackexchange.com/questions/332532/how-to-set-path-when-running-a-ssh-command)
 
-It is the little things that help so freaking much.  
+It is the little things that help so freaking much.
 [How to check if a shell is login/interactive/batch - Unix & Linux Stack Exchange](https://unix.stackexchange.com/questions/26676/how-to-check-if-a-shell-is-login-interactive-batch)
 
 [Shell - "Command not found" when using ssh and non absolute commands - Unix & Linux Stack Exchange](https://unix.stackexchange.com/questions/493287/command-not-found-when-using-ssh-and-non-absolute-commands)
 
-Good ol’ official documentation ftw!  
+Good ol’ official documentation ftw!
 [Bash Startup Files (Bash Reference Manual)](https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html)
 
 [Configure Synology NAS SSH Key-based authentication](https://blog.aaronlenoir.com/2018/05/06/ssh-into-synology-nas-with-ssh-key/)
