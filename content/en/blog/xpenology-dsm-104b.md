@@ -1,7 +1,7 @@
 ---
 title: "Xpenology DSM on VMware ESXi 7"
 date: 2021-03-07T21:50:36-06:00
-author: The Masked Farter (@farter_masked)
+author: The Masked Farter ([@farter_masked](https://twitter.com/farter_masked))
 draft: false
 ---
 
