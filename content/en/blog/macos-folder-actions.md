@@ -1,6 +1,6 @@
 ---
 title: "macOS Folder Actions - Dismiss Notifications"
-date: 2021-06-01T14:50:36-06:00
+date: 2021-06-01T15:01:57-05:00
 author: The Masked Farter (@farter_masked)
 draft: false
 ---
