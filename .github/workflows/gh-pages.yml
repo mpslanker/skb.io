@@ -20,6 +20,11 @@ jobs:
         with:
           hugo-version: 'latest'
           extended: true
+          
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
       - name: Build
         run: hugo --minify
