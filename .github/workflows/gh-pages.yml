@@ -27,8 +27,7 @@ jobs:
           node-version: 16
 
       - name: Build
-        run: npm install
-        run: hugo --minify
+        run: npm install && hugo --minify
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
