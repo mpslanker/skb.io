@@ -174,8 +174,9 @@ Hello, Angular!
 When you save the page should automatically refresh and you will be greeting with our much prettier version:
 ![](/img/first-ng-change.png)
 
-> NOTE: This doesn't belong here yet but I wrote it to make sure I don't forget to call it out.
-
+{{< notice info >}}
+This doesn't belong here yet but I wrote it to make sure I don't forget to call it out.
+{{< /notice >}}
 ## Cross-Origin Resource Sharing (CORS)
 Since our API is running on [http://localhost:8000](http://localhost:8000) and our WebApp is running [http://localhost:4200](http://localhost:4200), we will bump into an confusing CORS error.  Both FastAPI and Angular seek to prevent CORS by default and has to be change on both sides.  We shall start with Angular since we are already here.
 
