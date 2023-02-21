@@ -46,7 +46,7 @@ mangum = "*"
 python_version = "3.11"
 ```
 
-Once that is done we can start writing our `main.py`.  The full code can be found here.
+Once that is done we can start writing our `main.py`.  The full code can be found [here](https://skb.io/code/my_api/main.py).
 
 The first thing we need to do is import FastAPI and Mangum so that we can start working with them.
 
@@ -123,7 +123,7 @@ This will tie up this terminal so get ready to open yet another one.
 However, before that we can test this in our browser.
 By default this page is served at [http://localhost:4200](http://localhost:4200) and should look like this:
 
-![](./imgs/new-ng-app.png)
+![](/img/new-ng-app.png)
 
 ## Editing the Start Project
 
@@ -168,7 +168,7 @@ Let's wipe out this demo page and make it our own.
 Hello, Angular!
 ```
 When you save the page should automatically refresh and you will be greeting with our much prettier version:
-![](./imgs/first-ng-change.png)
+![](/img/first-ng-change.png)
 
 > NOTE: This doesn't belong here yet but I wrote it to make sure I don't forget to call it out.
 
