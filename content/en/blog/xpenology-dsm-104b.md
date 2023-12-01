@@ -1,5 +1,5 @@
 ---
-title: "Xpenology DSM on VMware ESXi 7"
+title: "Xpenology DSM 6.1.x on VMware ESXi 7"
 date: 2021-03-07T21:50:36-06:00
 author: The Masked Farter (@farter_masked)
 draft: false
