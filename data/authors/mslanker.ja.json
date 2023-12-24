@@ -1,0 +1,13 @@
+{
+    "name": "マシュースレンカー",
+    "image" : "img/blowfish_logo.png",
+    "headline": "僕は人間だけだよ！",
+    "bio": "自己紹介です。",
+    "social": [
+        { "email": "mailto:dev@msitp.com" },
+        { "twitter": "https://twitter.com/mpslanker" },
+        { "github": "https://github.com/mpslanker" },
+        { "keybase": "https://keybase.io/mslanker" },
+        { "reddit": "https://reddit.com/user/mslanker" }
+    ]
+}

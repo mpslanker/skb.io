@@ -1,0 +1,12 @@
+{
+    "name": "Michael Charo",
+    "image" : "img/blowfish_logo.png",
+    "bio": "I have an alter ego",
+    "social": [
+        { "twitter": "https://twitter.com/mcharo" },
+        { "github": "https://github.com/mcharo" },
+        { "goodreads": "http://goodreads.com/mcharo" },
+        { "keybase": "https://keybase.io/mcharo" },
+        { "reddit": "https://reddit.com/user/mcharo" }
+    ]
+}
