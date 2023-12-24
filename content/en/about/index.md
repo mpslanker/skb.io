@@ -1,7 +1,7 @@
 +++
 title = 'About The Authors'
 date = '2023-12-24T04:52:52Z'
-authors = ['mslanker', 'mcharo']
+authors = ['mslanker', 'mcharo', 'masked_farter', 'mslanker.ja']
 draft = false
 +++
 
