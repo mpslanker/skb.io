@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://skb.io/sitemap.xml
