@@ -16,7 +16,7 @@ contentDir = "content/en"
 
 [author]
   name = "Matthew P. Slanker"
-  image = "img/blowfish_logo.png"
+  image = "img/skb-logo.png"
   headline = "I'm only human"
   bio = "A doer of doable things"
   links = [
