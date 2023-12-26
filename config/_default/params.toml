@@ -19,7 +19,7 @@ disableImageOptimization = false
 disableTextInHeader = false
 
 defaultBackgroundImage = "/img/ocean.jpg"
-defaultFeaturedImage = "/img/ocean.jpg"
+defaultFeaturedImage = "/img/cubes.png"
 
 highlightCurrentMenuArea = true
 smartTOC = true
