@@ -1,6 +1,6 @@
 ---
 title: "Welcome to skb.io! :tada:"
-description: "This is a demo of the Blowfish theme for Hugo."
+description: "A knowledge base of sorts."
 ---
 
 <script defer="" src="/lib/typeit/typeit.umd.js" integrity=""></script>
