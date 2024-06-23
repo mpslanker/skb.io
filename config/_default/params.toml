@@ -19,7 +19,7 @@ disableImageOptimization = false
 disableTextInHeader = false
 
 # defaultBackgroundImage = "/img/ocean.jpg"
-defaultBackgroundImage = "/img/background.svg"
+defaultBackgroundImage = "/img/ripples.svg"
 defaultFeaturedImage = "/img/cubes.png"
 
 highlightCurrentMenuArea = true
