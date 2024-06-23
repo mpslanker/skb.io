@@ -18,7 +18,8 @@ mainSections = ["posts"]
 disableImageOptimization = false
 disableTextInHeader = false
 
-defaultBackgroundImage = "/img/ocean.jpg"
+# defaultBackgroundImage = "/img/ocean.jpg"
+defaultBackgroundImage = "/img/background.svg"
 defaultFeaturedImage = "/img/cubes.png"
 
 highlightCurrentMenuArea = true
