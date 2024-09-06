@@ -1,0 +1,32 @@
+theme = "blowfish"
+baseURL = "https://skb.io"
+defaultContentLanguage = "en"
+enableRobotsTXT = true
+pagination.PageSize = 100
+summaryLength = 30
+buildDrafts = false
+buildFuture = false
+googleAnalytics = "G-PEDMYR1V0K"
+enableEmoji = true
+
+[imaging]
+anchor = "Center"
+
+[taxonomies]
+tag = "tags"
+category = "categories"
+author = "authors"
+series = "series"
+
+[sitemap]
+changefreq = "always"
+filename = "sitemap.xml"
+priority = 0.5
+
+[outputs]
+home = [ "HTML", "RSS", "JSON" ]
+
+[related]
+threshold = 0
+toLower = false
+indices = [ { name = "tags", weight = 100 }, { name = "categories", weight = 100 }, { name = "series", weight = 50 }, { name = "authors", weight = 20 }, { name = "date", weight = 10 }, { applyFilter = false, name = "fragmentrefs", type = "fragments", weight = 10 } ]

@@ -16,15 +16,22 @@
                     {{ end }}
                 </div>
                 <div class="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8 flex flex-col items-center justify-center text-center">
-                    {{ with .Site.Author.image }}
-                    {{ $authorImage := resources.Get . }}
-                    {{ if $authorImage }}
-                    {{ if not $disableImageOptimization }}
-                    {{ $authorImage = $authorImage.Fill "288x288" }}
-                    {{ end }}
-                    <img class="mb-2 rounded-full h-36 w-36" width="144" height="144"
-                        alt="{{ $.Site.Author.name | default " Author" }}" src="{{ $authorImage.RelPermalink }}" />
-                    {{ end }}
+                    {{ $defaultBadgeImage := .Site.Params.defaultBadgeImage }}
+                    {{ with $defaultBadgeImage }}
+                        {{ $badgeImage := resources.Get . }}
+                        {{ if $badgeImage }}
+                            {{ if not $disableImageOptimization }}
+                                {{ $badgeImage = $badgeImage.Fill "288x288" }}
+                            {{ end }}
+                            <img class="mb-2 rounded-full h-36 w-36" width="144" height="144"
+                                alt="{{ $.Site.Title }} Badge" src="{{ $badgeImage.RelPermalink }}" />
+                        {{ else }}
+                            <!-- Debug: Badge image not found -->
+                            <p>Debug: Badge image not found at path: {{ . }}</p>
+                        {{ end }}
+                    {{ else }}
+                        <!-- Debug: No default badge image specified -->
+                        <p>Debug: No default badge image specified in site parameters</p>
                     {{ end }}
                     <h1 class="mb-2 text-4xl font-extrabold text-neutral-200">
                         {{ default .Site.Title }}
