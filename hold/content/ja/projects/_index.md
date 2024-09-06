@@ -1,4 +1,0 @@
-+++
-title = "プロジェクト"
-description = "projects"
-+++
