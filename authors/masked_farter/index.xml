@@ -17,4 +17,13 @@ class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 
 style="text-decoration-line: none !important;" href="#goals" aria-label="Anchor">#&lt;/a>
 &lt;/span>
 &lt;/h2>
-&lt;p>To build a virtual DSM machine starting with just the synoboot.img.&lt;/p></description><media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://skb.io/posts/xpenology-dsm104b/featured.png"/></item></channel></rss>
+&lt;p>To build a virtual DSM machine starting with just the synoboot.img.&lt;/p>
+&lt;h2 class="relative group">VMware Steps
+&lt;div id="vmware-steps" class="anchor">&lt;/div>
+&lt;span
+class="absolute top-0 w-6 transition-opacity opacity-0 ltr:-left-6 rtl:-right-6 not-prose group-hover:opacity-100">
+&lt;a class="group-hover:text-primary-300 dark:group-hover:text-neutral-700"
+style="text-decoration-line: none !important;" href="#vmware-steps" aria-label="Anchor">#&lt;/a>
+&lt;/span>
+&lt;/h2>
+&lt;p>Steps to create a VM with the hardware necessary to boot Jun&amp;rsquo;s synoboot image&lt;/p></description><media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://skb.io/posts/xpenology-dsm104b/featured.png"/></item></channel></rss>
