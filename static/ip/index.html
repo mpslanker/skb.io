@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Find My Public IP</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 2rem;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    #ip {
+      font-size: 1.5rem;
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background-color: #ffffff;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    button:hover {
+      background-color: #e2e8f0;
+    }
+    #status {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Public IP Address:</h1>
+  <div id="ip">Loading...</div>
+  <button onclick="copyIP()">Copy to Clipboard</button>
+  <div id="status"></div>
+
+  <script>
+    const ipDisplay = document.getElementById("ip");
+    const statusDisplay = document.getElementById("status");
+
+    const ipSources = [
+      { url: "https://api.ipify.org?format=json", path: "ip" },
+      { url: "https://ipinfo.io/json", path: "ip" },
+      { url: "https://ifconfig.me/all.json", path: "ip_addr" },
+      { url: "https://httpbin.org/ip", path: "origin" },
+    ];
+
+    async function fetchIP() {
+      for (const source of ipSources) {
+        try {
+          const response = await fetch(source.url);
+          if (!response.ok) continue;
+          const data = await response.json();
+          const ip = data[source.path];
+          if (ip) {
+            ipDisplay.textContent = ip;
+            return;
+          }
+        } catch (e) {
+          continue;
+        }
+      }
+      ipDisplay.textContent = "Unable to fetch IP 😢";
+    }
+
+    function copyIP() {
+      const ip = ipDisplay.textContent;
+      if (!ip || ip.includes("Unable")) {
+        statusDisplay.textContent = "No valid IP to copy.";
+        return;
+      }
+      navigator.clipboard.writeText(ip).then(() => {
+        statusDisplay.textContent = "Copied!";
+        setTimeout(() => (statusDisplay.textContent = ""), 1500);
+      });
+    }
+
+    fetchIP();
+  </script>
+</body>
+</html>
