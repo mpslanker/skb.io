@@ -1,0 +1,34 @@
+{
+  "name": "skb.io",
+  "version": "1.0.0",
+  "description": "Personal blog and knowledge base",
+  "private": true,
+  "scripts": {
+    "build": "hugo --minify",
+    "dev": "hugo server -D --disableFastRender",
+    "clean": "rm -rf public resources/_gen",
+    "preview": "hugo server --buildDrafts --buildFuture"
+  },
+  "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^6.0.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mpslanker/skb.io.git"
+  },
+  "author": "Matthew P. Slanker",
+  "license": "MIT",
+  "keywords": [
+    "hugo",
+    "blog",
+    "static-site",
+    "blowfish-theme"
+  ]
+}

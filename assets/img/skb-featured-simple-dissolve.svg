@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="400px" height="225px" viewBox="0 0 400 225">
+<defs>
+  <!-- Background gradient -->
+  <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+    <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+  </linearGradient>
+  
+  <!-- Tech gradient -->
+  <linearGradient id="tech" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+    <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+  </linearGradient>
+  
+  <!-- Dissolve filter -->
+  <filter id="dissolve" x="-50%" y="-50%" width="200%" height="200%">
+    <feTurbulence baseFrequency="0.6" numOctaves="3" result="noise" seed="1">
+      <animate attributeName="baseFrequency" values="0.6;1.0;0.6" dur="4s" repeatCount="indefinite"/>
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="8"/>
+    <feGaussianBlur stdDeviation="1.5">
+      <animate attributeName="stdDeviation" values="1.5;3;1.5" dur="3s" repeatCount="indefinite"/>
+    </feGaussianBlur>
+  </filter>
+  
+  <!-- Glow effect -->
+  <filter id="glow">
+    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+    <feMerge> 
+      <feMergeNode in="coloredBlur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
+
+<!-- Background -->
+<rect width="400" height="225" fill="url(#bg)"/>
+
+<!-- Grid pattern -->
+<defs>
+  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#334155" stroke-width="0.5" opacity="0.3"/>
+  </pattern>
+</defs>
+<rect width="400" height="225" fill="url(#grid)"/>
+
+<!-- Central hexagon (simplified Foxagon) -->
+<g transform="translate(200,112.5)">
+  <!-- Outer hexagon -->
+  <polygon points="0,-60 52,-30 52,30 0,60 -52,30 -52,-30" fill="url(#tech)" filter="url(#dissolve)" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;0.3;0.8" dur="4s" repeatCount="indefinite"/>
+  </polygon>
+  
+  <!-- Inner hexagon -->
+  <polygon points="0,-40 35,-20 35,20 0,40 -35,20 -35,-20" fill="none" stroke="url(#tech)" stroke-width="2" filter="url(#dissolve)" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3.5s" repeatCount="indefinite"/>
+  </polygon>
+  
+  <!-- Center dot -->
+  <circle cx="0" cy="0" r="8" fill="url(#tech)" filter="url(#dissolve)" opacity="0.9">
+    <animate attributeName="opacity" values="0.9;0.2;0.9" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="8;12;8" dur="2s" repeatCount="indefinite"/>
+  </circle>
+</g>
+
+<!-- Floating particles -->
+<g opacity="0.7">
+  <circle cx="80" cy="60" r="2" fill="url(#tech)" filter="url(#glow)">
+    <animate attributeName="cy" values="60;40;60" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="320" cy="80" r="1.5" fill="url(#tech)" filter="url(#glow)">
+    <animate attributeName="cy" values="80;60;80" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0.9;0.5" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="100" cy="160" r="1" fill="url(#tech)" filter="url(#glow)">
+    <animate attributeName="cy" values="160;140;160" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="300" cy="180" r="2.5" fill="url(#tech)" filter="url(#glow)">
+    <animate attributeName="cy" values="180;160;180" dur="3.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="3.5s" repeatCount="indefinite"/>
+  </circle>
+</g>
+
+<!-- Code brackets -->
+<g fill="url(#tech)" opacity="0.4" filter="url(#dissolve)">
+  <path d="M 60 80 L 50 80 L 50 140 L 60 140 L 60 130 L 60 90 Z">
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 340 80 L 350 80 L 350 140 L 340 140 L 340 130 L 340 90 Z">
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+  </path>
+</g>
+
+<!-- Site branding -->
+<text x="200" y="210" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10" opacity="0.3">skb.io</text>
+</svg>

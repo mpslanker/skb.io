@@ -1,6 +1,58 @@
+# Hugo build output
 public/
-resources/
+resources/_gen/
+
+# Hugo Modules
+_vendor/
+
+# Node.js dependencies
 node_modules/
-tech-doc-hugo
-.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Hugo build lock
 .hugo_build.lock
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Hugo cache
+.cache/
+
+# Hugo build stats
+hugo_stats.json
+
+# Claude AI settings
+.claude/
+
+# Old theme (if any)
+tech-doc-hugo

@@ -1,3 +1,5 @@
+# English menu configuration
+
 # -- Main Menu --
 # The main menu is displayed in the header at the top of the page.
 # Acceptable parameters are name, pageRef, page, url, title, weight.
@@ -12,58 +14,64 @@
 
 [[main]]
   name = "About"
-  pageRef = "/about"
+  pageRef = "about"
   weight = 10
 
 [[main]]
   name = "Blog"
-  pageRef = "/posts"
+  pageRef = "blog"
   weight = 15
 
 [[main]]
   name = "Projects"
-  pageRef = "/projects"
+  pageRef = "projects"
   weight = 16
 
-#[[main]]
-#  name = "Merch"
-#  url = "http://tee.pub/lic/qwSlWVBL5zc"
-#  weight = 100
+[[main]]
+  name = "Gallery"
+  pageRef = "gallery"
+  weight = 17
 
-#[[main]]
-#  name = "Test"
-#  pageRef = "pagTest"
-#  weight = 1000
+[[main]]
+  name = "Notes"
+  pageRef = "notes"
+  weight = 18
 
-# [[main]]
-#   identifier = "twitter"
-#   pre = "x-twitter"
-#   url = "https://twitter.com/burufugu"
-#   weight = 200
-
-# [[main]]
-#   identifier = "mastodon"
-#   pre = "mastodon"
-#   url = "https://masto.ai/@blowfish"
-#   weight = 300
+[[main]]
+  name = "Docs"
+  pageRef = "docs"
+  weight = 19
 
 # [[main]]
-#   identifier = "github"
-#   pre = "github"
-#   url = "https://github.com/nunocoracao/blowfish"
-#   weight = 400
+#   name = "Resources"
+#   pageRef = "/resources"
+#   weight = 20
 
+[[main]]
+  name = "Contact"
+  pageRef = "contact"
+  weight = 21
 
 # -- Footer Menu --
 # The footer menu is displayed at the bottom of the page, just before
 # the copyright notice. Configure as per the main menu above.
 
+[[footer]]
+  name = "Privacy"
+  pageRef = "privacy"
+  weight = 30
+
+[[footer]]
+  name = "License"
+  pageRef = "license"
+  weight = 20
+
  [[footer]]
    name = "Tags"
    pageRef = "tags"
-   weight = 10
+   weight = 40
 
  [[footer]]
    name = "Authors"
    pageRef = "authors"
-   weight = 20
+   weight = 10

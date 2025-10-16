@@ -1,0 +1,41 @@
+{{/*
+  Comments Partial - Giscus Integration
+
+  To enable comments:
+  1. Go to https://giscus.app/
+  2. Follow the setup instructions to:
+     - Enable GitHub Discussions on your repo
+     - Install the Giscus app
+     - Generate your configuration
+  3. Update the data attributes below with your values
+  4. Set showComments: true in your content front matter
+*/}}
+
+{{ if .Params.showComments }}
+<div class="comments-section mt-12 pt-8 border-t border-neutral-200 dark:border-neutral-700">
+  <h3 class="text-2xl font-bold mb-4">Comments</h3>
+
+  {{/* Giscus Comments - Replace the data attributes with your values */}}
+  <script src="https://giscus.app/client.js"
+          data-repo="[ENTER REPO HERE]"
+          data-repo-id="[ENTER REPO ID HERE]"
+          data-category="[ENTER CATEGORY NAME HERE]"
+          data-category-id="[ENTER CATEGORY ID HERE]"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="preferred_color_scheme"
+          data-lang="en"
+          crossorigin="anonymous"
+          async>
+  </script>
+
+  <noscript>
+    <p class="text-neutral-600 dark:text-neutral-400">
+      Please enable JavaScript to view the comments powered by Giscus.
+    </p>
+  </noscript>
+</div>
+{{ end }}

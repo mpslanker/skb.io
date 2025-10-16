@@ -3,6 +3,8 @@
 
 [goldmark]
 [goldmark.renderer]
+  # We have legit HTML in one of our articles
+  # and need the following override.
   unsafe = true
 
 [highlight]

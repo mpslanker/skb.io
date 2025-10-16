@@ -1,0 +1,13 @@
+{{- $words := .Get "words" | default 250 | int -}}
+{{- $speed := .Get "speed" | default 200 | int -}}
+{{- $minutes := div $words $speed -}}
+{{- if lt $minutes 1 -}}
+  {{- $minutes = 1 -}}
+{{- end -}}
+
+<span class="reading-time inline-flex items-center text-sm text-gray-600 dark:text-gray-400">
+  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+  </svg>
+  {{ $minutes }} min read
+</span>

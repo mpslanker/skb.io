@@ -1,0 +1,15 @@
+{{- $technologies := .Get "technologies" | default "html,css,javascript" -}}
+{{- $technologiesList := split $technologies "," -}}
+{{- $size := .Get "size" | default "medium" -}}
+
+{{- $sizeClasses := dict "small" "text-xs px-2 py-1" "medium" "text-sm px-3 py-1.5" "large" "text-base px-4 py-2" -}}
+{{- $class := index $sizeClasses $size | default (index $sizeClasses "medium") -}}
+
+<div class="tech-stack flex flex-wrap gap-2 my-4">
+  {{- range $technologiesList -}}
+    {{- $tech := trim . " " -}}
+    <span class="tech-badge {{ $class }} bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full font-medium">
+      {{ $tech }}
+    </span>
+  {{- end -}}
+</div>

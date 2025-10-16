@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none" x="0px" y="0px" width="400px" height="225px" viewBox="0 0 400 225">
+<defs>
+  <!-- Gradients from original Foxagon -->
+  <linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="100%" y2="100%" spreadMethod="pad">
+    <stop offset="0%" stop-color="#00195E"/>
+    <stop offset="100%" stop-color="#14BC8C"/>
+  </linearGradient>
+  
+  <linearGradient id="Gradient_2" gradientUnits="userSpaceOnUse" x1="0%" y1="0%" x2="100%" y2="100%" spreadMethod="pad">
+    <stop offset="0%" stop-color="#FF173D"/>
+    <stop offset="100%" stop-color="#FF5F0F"/>
+  </linearGradient>
+  
+  <!-- Background gradient -->
+  <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+    <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+  </linearGradient>
+  
+  <!-- Particle filter for dissolving effect -->
+  <filter id="dissolve" x="-50%" y="-50%" width="200%" height="200%">
+    <feTurbulence baseFrequency="0.8" numOctaves="4" result="noise" seed="1">
+      <animate attributeName="baseFrequency" values="0.8;1.2;0.8" dur="3s" repeatCount="indefinite"/>
+    </feTurbulence>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="15"/>
+    <feGaussianBlur stdDeviation="2">
+      <animate attributeName="stdDeviation" values="2;4;2" dur="2s" repeatCount="indefinite"/>
+    </feGaussianBlur>
+  </filter>
+  
+  <!-- Glow effect -->
+  <filter id="glow">
+    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+    <feMerge> 
+      <feMergeNode in="coloredBlur"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
+
+<!-- Background -->
+<rect width="400" height="225" fill="url(#bg)"/>
+
+<!-- Grid pattern -->
+<defs>
+  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#334155" stroke-width="0.5" opacity="0.3"/>
+  </pattern>
+</defs>
+<rect width="400" height="225" fill="url(#grid)"/>
+
+<!-- Main Foxagon shape (simplified and scaled) -->
+<g transform="translate(200,112.5) scale(0.15)">
+  <!-- Outer hexagon -->
+  <path fill="url(#Gradient_1)" stroke="none" d="M 887.4 721 L 887.4 271.4 498.05 46.6 108.75 271.4 108.75 721 498.1 945.8 887.4 721 Z" filter="url(#dissolve)">
+    <animate attributeName="opacity" values="1;0.3;1" dur="4s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Inner hexagon -->
+  <path fill="#000033" fill-opacity="0.996" stroke="none" d="M 823.9 689.55 L 825.05 312.75 496.15 123.35 170.35 312.75 171.5 689.55 497.7 876.6 823.9 689.55 Z" filter="url(#dissolve)">
+    <animate attributeName="opacity" values="0.8;0.1;0.8" dur="3.5s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Central geometric pattern -->
+  <path fill="url(#Gradient_2)" stroke="none" d="M 744.85 609.2 Q 745.6 607 746.35 604.25 L 725.15 604.9 Q 718.3 605.5 711.5 606.65 676.3 613.15 646.15 632.7 601.6 661.55 563.9 699 536.65 726 515.2 757.35 505.05 772.15 498.85 789.2 L 497.6 792.15 496.55 789.2 Q 490.35 772.15 480.2 757.35 458.75 726 431.5 699 393.8 661.55 349.25 632.7 319.1 613.15 283.9 606.65 277.1 605.5 270.25 604.9 L 249.05 604.25 Q 249.8 607 250.55 609.2 L 254.9 625.6 Q 263 652.9 276.05 678.2 293.6 712.1 322.7 736.7 352.8 762.2 389.4 777.1 425.7 791.85 452.8 819.2 476.5 843.1 497.7 869.15 518.9 843.1 542.6 819.2 569.7 791.85 606 777.1 642.6 762.2 672.7 736.7 701.8 712.1 719.35 678.2 732.4 652.9 740.5 625.6 L 744.85 609.2 Z" filter="url(#dissolve)">
+    <animate attributeName="opacity" values="1;0.2;1" dur="3s" repeatCount="indefinite"/>
+  </path>
+  
+  <!-- Inner detail -->
+  <path fill="#FDFCED" fill-opacity="0.992" stroke="none" d="M 703.55 514.7 Q 702.2 514 700.85 513.4 685.75 506.45 669.85 502.2 660.6 500.3 649.85 502.2 640.45 503.55 631.75 506.85 626.25 508.95 621 511.8 603.5 521.4 589.35 535.25 575.55 548.8 564.85 564.75 544.05 595.85 537.7 632.85 535.95 642.95 534.85 652.2 522.55 676.45 508.9 682.3 502.6 685 497.7 685.4 492.8 685 486.5 682.3 472.85 676.45 460.55 652.2 459.45 642.95 457.7 632.85 451.35 595.85 430.55 564.75 419.85 548.8 406.05 535.25 391.9 521.4 374.4 511.8 369.15 508.95 363.65 506.85 354.95 503.55 345.55 502.2 334.8 500.3 325.55 502.2 309.65 506.45 294.55 513.4 293.2 514 291.85 514.7 272.8 523.8 256.6 537.35 240.9 550.4 227.55 565.7 220.4 574.05 215.4 583 L 217.8 582.15 Q 233.35 576.15 252.05 573.85 L 254.8 573.5 Q 266.65 572.1 282.45 574.35 L 300 577.55 Q 325.8 583.3 349.95 595.5 384.85 613.2 410.95 642.35 424.6 657.65 437.05 673.95 448.15 688.35 461.75 700.3 470.7 708.2 489.25 712 493.4 712.85 497.7 712.9 502 712.85 506.15 712 524.7 708.2 533.65 700.3 547.25 688.35 558.35 673.95 570.8 657.65 584.45 642.35 610.55 613.2 645.45 595.5 669.6 583.3 695.4 577.55 L 712.95 574.35 Q 728.75 572.1 740.6 573.5 L 743.35 573.85 Q 762.05 576.15 777.6 582.15 L 780 583 Q 775 574.05 767.85 565.7 754.5 550.4 738.8 537.35 722.6 523.8 703.55 514.7 Z" filter="url(#dissolve)">
+    <animate attributeName="opacity" values="0.9;0.1;0.9" dur="2.5s" repeatCount="indefinite"/>
+  </path>
+</g>
+
+<!-- Floating particles -->
+<g opacity="0.6">
+  <circle cx="50" cy="50" r="2" fill="url(#Gradient_1)" filter="url(#glow)">
+    <animate attributeName="cy" values="50;30;50" dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="350" cy="80" r="1.5" fill="url(#Gradient_2)" filter="url(#glow)">
+    <animate attributeName="cy" values="80;60;80" dur="2.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="80" cy="150" r="1" fill="#14BC8C" filter="url(#glow)">
+    <animate attributeName="cy" values="150;130;150" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.3;0.7;0.3" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="320" cy="180" r="2.5" fill="#FF173D" filter="url(#glow)">
+    <animate attributeName="cy" values="180;160;180" dur="3.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="120" cy="40" r="1.2" fill="#FF5F0F" filter="url(#glow)">
+    <animate attributeName="cy" values="40;20;40" dur="2.8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2.8s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="280" cy="200" r="1.8" fill="#00195E" filter="url(#glow)">
+    <animate attributeName="cy" values="200;180;200" dur="3.2s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="3.2s" repeatCount="indefinite"/>
+  </circle>
+</g>
+
+<!-- Code brackets (tech theme) -->
+<g fill="url(#Gradient_1)" opacity="0.4" filter="url(#dissolve)">
+  <path d="M 60 80 L 50 80 L 50 140 L 60 140 L 60 130 L 60 90 Z">
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+  </path>
+  <path d="M 340 80 L 350 80 L 350 140 L 340 140 L 340 130 L 340 90 Z">
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/>
+  </path>
+</g>
+
+<!-- Subtle site branding -->
+<text x="200" y="210" text-anchor="middle" fill="#64748b" font-family="monospace" font-size="10" opacity="0.3">skb.io</text>
+</svg>

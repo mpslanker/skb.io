@@ -1,0 +1,79 @@
+{{- $id := .Get "id" | default (printf "skb-typeit-%d" (now.UnixNano)) -}}
+{{- $class := .Get "class" | default "text-xl text-neutral-800 dark:text-neutral-300" -}}
+
+<div id="{{ $id }}" class="{{ $class }}">
+    <span class="ti-cursor" data-ti-animation-id="{{ $id }}">|</span>
+</div>
+
+{{ $typeitLib := resources.Get "lib/typeit/typeit.umd.js" | resources.Fingerprint "sha512" }}
+<script defer src="{{ $typeitLib.RelPermalink }}" integrity="{{ $typeitLib.Data.Integrity }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  new TypeIt("#{{ $id }}", {
+    speed: 100,
+    lifeLike: true,
+    startDelay: 0,
+    breakLines: false,
+    waitUntilVisible: true,
+    loop: true 
+  })
+    .type("Should've Known Better...", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Slanker's Knowledge Base", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Sht keeps", { delay: 100 })
+    .move(-7, { delay: 100 })
+    .type("*", { delay: 400 })
+    .move(3, { delay: 200 })
+    .delete(1)
+    .type("K", { delay: 100 })
+    .pause(200)
+    .move(null, { to: "END", instant: true, delay: 300 })
+    .pause(200)
+    .type(" Break", { delay: 100})
+    .type("ing", { delay: 900 })
+    .type("    😩", {delay: 3200})
+    .move(null, { to: "END" })
+    .delete(".place", { delay: 600 })
+    .type("Sushi, Kanji, Bytes", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Sketches, Kernels, Bash", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Sarcasm, Kawaii, Bandwidth", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Syntax, Katanas, Bugs", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Silicon, Kimonos, Binary", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Synthesis of Knowledge and Beauty", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Systems, Knowledge, Brilliance", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Sculpting Knowledge Bridges", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Spectrum of Knowledge and Brilliance", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Syntax, Knowledge, Brevity", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Supernovas, Kanji, Binaries", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Syntax, Kawaii, Bootloaders", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Serenades, Katanas, Bytecode", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Scribbles, Kudos, Breakpoints", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Squiggles, Kana, Backend", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Synapse, Kanji, Bandwidth", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Spectrum, Knowledge, Boundaries", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Synthesis, Knowledge, Bi-lingual", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .type("Strategies, Knowledge, Breakthroughs", {delay: 800})
+    .delete(".place", { delay: 800 })
+    .go();
+});
+</script>

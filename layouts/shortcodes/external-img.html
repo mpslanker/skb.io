@@ -1,0 +1,18 @@
+{{/*
+External Image Shortcode
+Usage: {{< external-img src="https://cdn.example.com/image.jpg" alt="Description" >}}
+Optional params: caption, class, loading
+*/}}
+
+{{ $src := .Get "src" }}
+{{ $alt := .Get "alt" | default "" }}
+{{ $caption := .Get "caption" | default "" }}
+{{ $class := .Get "class" | default "" }}
+{{ $loading := .Get "loading" | default "lazy" }}
+
+<figure{{ with $class }} class="{{ . }}"{{ end }}>
+  <img src="{{ $src }}" alt="{{ $alt }}" loading="{{ $loading }}" />
+  {{ with $caption }}
+  <figcaption>{{ . }}</figcaption>
+  {{ end }}
+</figure>

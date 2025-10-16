@@ -1,13 +1,13 @@
 {
     "name": "Matthew P. Slanker",
-    "image" : "img/mslanker1.png",
-    "headline": "snootchy bootchies",
-    "bio": "I am only human",
+    "image": "img/mslanker1.png",
+    "headline": "I'm only human",
+    "bio": "Technologist passionate about building things that work and sharing knowledge along the way.",
     "social": [
         { "email": "mailto:dev@msitp.com" },
-        { "twitter": "https://twitter.com/mpslanker" },
         { "github": "https://github.com/mpslanker" },
         { "keybase": "https://keybase.io/mslanker" },
-        { "reddit": "https://reddit.com/user/mslanker" }
+        { "reddit": "https://reddit.com/user/mslanker" },
+        { "twitter": "https://twitter.com/mpslanker" }
     ]
 }

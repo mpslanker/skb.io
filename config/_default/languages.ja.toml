@@ -1,0 +1,42 @@
+languageCode = "ja"
+languageName = "日本語"
+weight = 2
+title = "skb.io"
+
+[params]
+  displayName = "JA"
+  isoCode = "ja"
+  rtl = false
+  dateFormat = "2006年1月2日"
+  description = "技術、プロジェクト、アイデアに関する個人のウェブサイトとブログ。チュートリアル、プロジェクト展示、技術的洞察を探索してください。"
+  logo = "img/logos/skb-logo.png"
+  
+  # SEO and Social Media
+  [params.seo]
+    image = "/img/logos/skb-logo.png"
+    twitterCard = "summary_large_image"
+    twitterSite = "@mpslanker"
+    twitterCreator = "@mpslanker"
+    
+  # Open Graph
+  [params.openGraph]
+    image = "/img/logos/skb-logo.png"
+    imageAlt = "SKB.io - テクノロジー、プロジェクト、アイデア"
+    siteName = "skb.io"
+    type = "website"
+
+# Site-wide author information (used for homepage, general attribution)
+[params.author]
+  name = "マシュー・P・スランカー"
+  email = "dev@msitp.com"
+  image = "img/logos/skb-logo.png"
+  imageQuality = 96
+  headline = "僕は人間だけだよ！"
+  bio = "できることをする人"
+  links = [
+    { email = "mailto:dev@msitp.com" },
+    { github = "https://github.com/mpslanker" },
+    { keybase = "https://keybase.io/mslanker" },
+    { reddit = "https://reddit.com/user/mslanker" },
+    { twitter = "https://twitter.com/mpslanker" }
+  ]

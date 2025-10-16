@@ -1,0 +1,77 @@
+# Japanese menu configuration
+
+# -- Main Menu --
+# The main menu is displayed in the header at the top of the page.
+# Acceptable parameters are name, pageRef, page, url, title, weight.
+# 
+# The simplest menu configuration is to provide:
+#   name = The name to be displayed for this menu link
+#   pageRef = The identifier of the page or section to link to
+#
+# By default the menu is ordered alphabetically. This can be
+# overridden by providing a weight value. The menu will then be
+# ordered by weight from lowest to highest.
+
+[[main]]
+  name = "について"
+  pageRef = "about"
+  weight = 10
+
+[[main]]
+  name = "ブログ"
+  pageRef = "blog"
+  weight = 20
+
+[[main]]
+  name = "プロジェクト"
+  pageRef = "projects"
+  weight = 30
+
+[[main]]
+  name = "ギャラリー"
+  pageRef = "gallery"
+  weight = 40
+
+[[main]]
+  name = "ノート"
+  pageRef = "notes"
+  weight = 50
+
+[[main]]
+  name = "ドキュメント"
+  pageRef = "docs"
+  weight = 60
+
+# [[main]]
+#   name = "リソース"
+#   pageRef = "resources"
+#   weight = 70
+
+[[main]]
+  name = "お問い合わせ"
+  pageRef = "contact"
+  weight = 80
+
+# -- Footer Menu --
+# The footer menu is displayed at the bottom of the page, just before
+# the copyright notice. Configure as per the main menu above.
+
+[[footer]]
+  name = "プライバシー"
+  pageRef = "privacy"
+  weight = 30
+
+[[footer]]
+  name = "ライセンス"
+  pageRef = "license"
+  weight = 20
+
+[[footer]]
+  name = "タグ"
+  pageRef = "tags"
+  weight = 40
+
+[[footer]]
+  name = "著者"
+  pageRef = "authors"
+  weight = 10

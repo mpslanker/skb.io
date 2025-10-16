@@ -1,0 +1,18 @@
+{{- $featured := .Params.featured -}}
+{{- $defaultFeatured := .Site.Params.defaultFeaturedImage -}}
+
+{{- if $featured -}}
+  {{- $image := .Resources.GetMatch $featured -}}
+  {{- if $image -}}
+    {{- $image -}}
+  {{- else -}}
+    {{- $image = resources.Get $featured -}}
+    {{- if $image -}}
+      {{- $image -}}
+    {{- else -}}
+      {{- resources.Get $defaultFeatured -}}
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  {{- resources.Get $defaultFeatured -}}
+{{- end -}}

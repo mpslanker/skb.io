@@ -1,0 +1,30 @@
+{{- $id := .Get "id" | default (printf "typeit-%d" (now.UnixNano)) -}}
+{{- $speed := .Get "speed" | default 100 -}}
+{{- $lifeLike := .Get "lifeLike" | default true -}}
+{{- $startDelay := .Get "startDelay" | default 0 -}}
+{{- $breakLines := .Get "breakLines" | default false -}}
+{{- $waitUntilVisible := .Get "waitUntilVisible" | default true -}}
+{{- $loop := .Get "loop" | default true -}}
+{{- $class := .Get "class" | default "text-xl text-neutral-800 dark:text-neutral-300" -}}
+
+<div id="{{ $id }}" class="{{ $class }}">
+    <span class="ti-cursor" data-ti-animation-id="{{ $id }}">|</span>
+</div>
+
+{{ $typeitLib := resources.Get "lib/typeit/typeit.umd.js" | resources.Fingerprint "sha512" }}
+<script defer src="{{ $typeitLib.RelPermalink }}" integrity="{{ $typeitLib.Data.Integrity }}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  new TypeIt("#{{ $id }}", {
+    speed: {{ $speed }},
+    lifeLike: {{ $lifeLike }},
+    startDelay: {{ $startDelay }},
+    breakLines: {{ $breakLines }},
+    waitUntilVisible: {{ $waitUntilVisible }},
+    loop: {{ $loop }}
+  })
+    .type("{{ .Inner }}", {delay: 800})
+    .go();
+});
+</script>

@@ -1,0 +1,242 @@
+/* Custom CSS for SKB.io - Modern Enhancements */
+
+/* Enhanced Typography */
+.prose {
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Enhanced Code Blocks */
+.prose pre {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Custom Link Styles */
+.prose a {
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.prose a:hover {
+  border-bottom-color: currentColor;
+}
+
+/* Enhanced Card Hover Effects */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom Button Styles */
+.btn {
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced Focus States */
+*:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Enhanced Image Styles */
+.prose img {
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+}
+
+.prose img:hover {
+  transform: scale(1.02);
+}
+
+/* Custom Alert Styles */
+.alert {
+  border-radius: 0.75rem;
+  border-left: 4px solid;
+}
+
+.alert-info {
+  border-left-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.alert-warning {
+  border-left-color: #f59e0b;
+  background-color: #fffbeb;
+}
+
+.alert-error {
+  border-left-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.alert-success {
+  border-left-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+/* Dark mode alerts */
+.dark .alert-info {
+  background-color: #1e3a8a;
+}
+
+.dark .alert-warning {
+  background-color: #92400e;
+}
+
+.dark .alert-error {
+  background-color: #991b1b;
+}
+
+.dark .alert-success {
+  background-color: #065f46;
+}
+
+/* Enhanced Table Styles */
+.prose table {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.prose th {
+  background-color: #f8fafc;
+  font-weight: 600;
+}
+
+.dark .prose th {
+  background-color: #1e293b;
+}
+
+/* Custom Animation for TypeIt */
+.ti-cursor {
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Enhanced Navigation */
+.nav-link {
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: currentColor;
+  transition: width 0.2s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+}
+
+/* Custom Loading Animation */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .prose {
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  
+  .prose h1 {
+    font-size: 1.875rem;
+  }
+  
+  .prose h2 {
+    font-size: 1.5rem;
+  }
+  
+  .prose h3 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .prose {
+    color: #000 !important;
+    background: #fff !important;
+  }
+  
+  .prose a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+}
