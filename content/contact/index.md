@@ -16,10 +16,10 @@ tags = []
 
 I'd love to hear from you! Whether you have questions about my projects, want to collaborate, or just want to say hello, here are the best ways to reach me:
 
-### Email
+<!-- ### Email
 
 - **Primary**: [dev@msitp.com](mailto:dev@msitp.com)
-- **Response Time**: I typically respond within 1-2 business days
+- **Response Time**: I typically respond within 1-2 business days -->
 
 ### Social & Professional
 
@@ -28,20 +28,20 @@ I'd love to hear from you! Whether you have questions about my projects, want to
 - **Keybase**: [@mslanker](https://keybase.io/mslanker) - Secure communication
 - **Reddit**: [u/mslanker](https://reddit.com/user/mslanker) - Technical discussions
 
-### What I'm Interested In
+<!-- ### What I'm Interested In
 
 - **Technical Discussions**: DevOps, containerization, automation
 - **Collaboration**: Open source projects, technical writing
 - **Learning**: Always happy to discuss new technologies and approaches
-- **Feedback**: Thoughts on my blog posts and projects
+- **Feedback**: Thoughts on my blog posts and projects -->
 
-### Best Ways to Connect
+<!-- ### Best Ways to Connect
 
 - **Quick Questions**: Twitter/X or Reddit
 - **Technical Discussions**: GitHub issues or email
 - **Collaboration**: Email or GitHub
-- **Secure Communication**: Keybase
+- **Secure Communication**: Keybase -->
 
-### Response Time
+<!-- ### Response Time
 
-I typically respond within 1-2 business days. For urgent matters, please mention it in your message subject line.
+I typically respond within 1-2 business days. For urgent matters, please mention it in your message subject line. -->
